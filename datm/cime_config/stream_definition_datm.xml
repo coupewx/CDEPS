@@ -5308,6 +5308,15 @@
       <var>atmImp_Faxa_swvdr Faxa_swvdr</var>
       <var>atmImp_Faxa_swndf Faxa_swndf</var>
       <var>atmImp_Faxa_swvdf Faxa_swvdf</var>
+      <var>atmImp_Sa_ephyto1UVA Sa_ephyto1UVA</var>
+      <var>atmImp_Sa_ephyto1UVB Sa_ephyto1UVB</var>
+      <var>atmImp_Sa_ephyto1UVC Sa_ephyto1UVC</var>
+      <var>atmImp_Sa_ephyto5UVA Sa_ephyto5UVA</var>
+      <var>atmImp_Sa_ephyto5UVB Sa_ephyto5UVB</var>
+      <var>atmImp_Sa_ephyto5UVC Sa_ephyto5UVC</var>
+      <var>atmImp_Sa_ephyto7UVA Sa_ephyto7UVA</var>
+      <var>atmImp_Sa_ephyto7UVB Sa_ephyto7UVB</var>
+      <var>atmImp_Sa_ephyto7UVC Sa_ephyto7UVC</var>
     </stream_datavars>
     <stream_lev_dimname>null</stream_lev_dimname>
     <stream_mapalgo>
