@@ -40,6 +40,18 @@ module datm_datamode_cplhist_mod
   real(r8), pointer :: Faxa_swndf(:)      => null()
   real(r8), pointer :: Faxa_swvdr(:)      => null()
   real(r8), pointer :: Faxa_swvdf(:)      => null()
+  ! add UV radiation - COUPE 07/22/2026
+  real(r8), pointer :: Sa_ephyto1UVA(:)           => null() ! ephyto1 is Cullen et al. (1992) for Diatoms
+  real(r8), pointer :: Sa_ephyto1UVB(:)           => null()
+  real(r8), pointer :: Sa_ephyto1UVC(:)           => null()
+
+  real(r8), pointer :: Sa_ephyto5UVA(:)           => null() ! ephyto5 is Lorenzo et al. (2019) for Coccolithophores
+  real(r8), pointer :: Sa_ephyto5UVB(:)           => null()
+  real(r8), pointer :: Sa_ephyto5UVC(:)           => null()
+
+  real(r8), pointer :: Sa_ephyto7UVA(:)           => null() ! ephyto7 is Neale et al. (2014) for Small Phytoplankton, synechococcus
+  real(r8), pointer :: Sa_ephyto7UVB(:)           => null()
+  real(r8), pointer :: Sa_ephyto7UVC(:)           => null()
 
   ! stream data pointers
 
@@ -62,6 +74,18 @@ module datm_datamode_cplhist_mod
   real(r8), pointer :: strm_Faxa_snowc(:) => null()
   real(r8), pointer :: strm_Faxa_snowl(:) => null()
   real(r8), pointer :: strm_Faxa_lwdn (:) => null()
+  ! add UV radiation - COUPE 07/22/2026
+  real(r8), pointer :: strm_Sa_ephyto1UVA(:)           => null() ! ephyto1 is Cullen et al. (1992) for Diatoms
+  real(r8), pointer :: strm_Sa_ephyto1UVB(:)           => null()
+  real(r8), pointer :: strm_Sa_ephyto1UVC(:)           => null()
+
+  real(r8), pointer :: strm_Sa_ephyto5UVA(:)           => null() ! ephyto5 is Lorenzo et al. (2019) for Coccolithophores
+  real(r8), pointer :: strm_Sa_ephyto5UVB(:)           => null()
+  real(r8), pointer :: strm_Sa_ephyto5UVC(:)           => null()
+
+  real(r8), pointer :: strm_Sa_ephyto7UVA(:)           => null() ! ephyto7 is Neale et al. (2014) for Small Phytoplankton, synechococcus
+  real(r8), pointer :: strm_Sa_ephyto7UVB(:)           => null()
+  real(r8), pointer :: strm_Sa_ephyto7UVC(:)           => null()
 
   character(len=*), parameter :: u_FILE_u = &
        __FILE__
@@ -107,6 +131,18 @@ contains
     call dshr_fldList_add(fldsExport, 'Faxa_snowc' )
     call dshr_fldList_add(fldsExport, 'Faxa_snowl' )
     call dshr_fldList_add(fldsExport, 'Faxa_lwdn'  )
+    ! add UV radiation - COUPE 07/22/2026
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto1UVA'  )
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto1UVB'  )
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto1UVC'  )
+
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto5UVA'  )
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto5UVB'  )
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto5UVC'  )
+
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto7UVA'  )
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto7UVB'  )
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto7UVC'  )
 
     fldlist => fldsExport ! the head of the linked list
     do while (associated(fldlist))
@@ -173,6 +209,31 @@ contains
     call dshr_state_getfldptr(exportState, 'Faxa_swndf' , fldptr1=Faxa_swndf , rc=rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
+    ! add UV radiation COUPE 07/22/2026
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto1UVA' , fldptr1=Sa_ephyto1UVA , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto1UVB' , fldptr1=Sa_ephyto1UVB , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto1UVC' , fldptr1=Sa_ephyto1UVC , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto5UVA' , fldptr1=Sa_ephyto5UVA , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto5UVB' , fldptr1=Sa_ephyto5UVB , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto5UVC' , fldptr1=Sa_ephyto5UVC , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto7UVA' , fldptr1=Sa_ephyto7UVA , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto7UVB' , fldptr1=Sa_ephyto7UVB , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto7UVC' , fldptr1=Sa_ephyto7UVC , rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+
+
+
+
     ! Set pointers into stream data
 
     call shr_strdata_get_stream_pointer(sdat, 'Sa_topo', strm_Sa_topo, requirePointer=.true., &
@@ -236,6 +297,39 @@ contains
          errmsg=subname//'ERROR: strm_Faxa_lwdn must be associated for clmncep datamode', rc=rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
+    ! add UV radiation -  COUPE 07/22/2026
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto1UVA', strm_Sa_ephyto1UVA, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto1UVA must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto1UVB', strm_Sa_ephyto1UVB, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto1UVB must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto1UVC', strm_Sa_ephyto1UVC, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto1UVC must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto5UVA', strm_Sa_ephyto5UVA, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto5UVA must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto5UVB', strm_Sa_ephyto5UVB, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto5UVB must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto5UVC', strm_Sa_ephyto5UVC, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto5UVC must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto7UVA', strm_Sa_ephyto7UVA, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto1UVA must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto7UVB', strm_Sa_ephyto7UVB, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto7UVB must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto7UVC', strm_Sa_ephyto7UVC, requirePointer=.true., &
+         errmsg=subname//'ERROR: strm_Sa_ephyto7UVC must be associated for clmncep datamode', rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+
+
+
  end subroutine datm_datamode_cplhist_init_pointers
 
   !===============================================================================
@@ -270,6 +364,19 @@ contains
     Faxa_swndf(:) = strm_Faxa_swndf(:)
     Faxa_swvdr(:) = strm_Faxa_swvdr(:)
     Faxa_swvdf(:) = strm_Faxa_swvdf(:)
+    ! add UV radiation COUPE 07/22/2026
+    Sa_ephyto1UVA(:) = strm_Sa_ephyto1UVA(:)
+    Sa_ephyto1UVB(:) = strm_Sa_ephyto1UVB(:)
+    Sa_ephyto1UVC(:) = strm_Sa_ephyto1UVC(:)
+
+    Sa_ephyto5UVA(:) = strm_Sa_ephyto5UVA(:)
+    Sa_ephyto5UVB(:) = strm_Sa_ephyto5UVB(:)
+    Sa_ephyto5UVC(:) = strm_Sa_ephyto5UVC(:)
+
+    Sa_ephyto7UVA(:) = strm_Sa_ephyto7UVA(:)
+    Sa_ephyto7UVB(:) = strm_Sa_ephyto7UVB(:)
+    Sa_ephyto7UVC(:) = strm_Sa_ephyto7UVC(:)
+
 
   end subroutine datm_datamode_cplhist_advance
 
