@@ -10,23 +10,34 @@ module datm_pres_ndep_mod
   implicit none
   private
 
-  public :: datm_pres_ndep_advertise
-  public :: datm_pres_ndep_init_pointers
-  public :: datm_pres_ndep_advance
+  public :: datm_pres_uv_advertise
+  public :: datm_pres_uv_init_pointers
+  public :: datm_pres_uv_advance
 
   ! export state data
-  real(r8), pointer :: Faxa_ndep(:,:) => null()
+  real(r8), pointer :: Sa_ephyto1UVA(:,:) => null()
+  real(r8), pointer :: Sa_ephyto1UVB(:,:) => null()
+  real(r8), pointer :: Sa_ephyto1UVC(:,:) => null()
+  real(r8), pointer :: Sa_ephyto5UVA(:,:) => null()
+  real(r8), pointer :: Sa_ephyto5UVB(:,:) => null()
+  real(r8), pointer :: Sa_ephyto5UVC(:,:) => null()
+  real(r8), pointer :: Sa_ephyto7UVA(:,:) => null()
+  real(r8), pointer :: Sa_ephyto7UVB(:,:) => null()
+  real(r8), pointer :: Sa_ephyto7UVC(:,:) => null()
 
   ! stream data
-  real(r8), pointer :: strm_Faxa_ndep_nhx_dry(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Faxa_ndep_nhx_wet(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Faxa_ndep_noy_dry(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Faxa_ndep_noy_wet(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto1UVA(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto1UVB(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto1UVC(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto5UVA(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto5UVB(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto5UVC(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto7UVA(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto7UVB(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto7UVC(:) => null() ! stream cmip7 ndep data
 
-  real(r8), pointer :: strm_Faxa_ndep_nhx(:)     => null() ! pre-cmip7 ndep data
-  real(r8), pointer :: strm_Faxa_ndep_noy(:)     => null() ! pre-cmip7 ndep data
 
-  logical :: use_cmip7_ndep
+  logical :: use_cmip7_uv
 
   character(len=*), parameter :: u_FILE_u = &
        __FILE__
@@ -35,18 +46,27 @@ module datm_pres_ndep_mod
 contains
 !===============================================================================
 
-  subroutine datm_pres_ndep_advertise(fldsExport)
+  subroutine datm_pres_uv_advertise(fldsExport)
 
     ! input/output variables
     type(fldlist_type) , pointer :: fldsexport
     !----------------------------------------------------------
 
-    call dshr_fldList_add(fldsExport, 'Faxa_ndep', ungridded_lbound=1, ungridded_ubound=2)
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto1UVA', ungridded_lbound=1, ungridded_ubound=2) ! still need to add uvb, uvc, etc
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto1UVB', ungridded_lbound=1, ungridded_ubound=2) 
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto1UVC', ungridded_lbound=1, ungridded_ubound=2) 
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto5UVA', ungridded_lbound=1, ungridded_ubound=2)  
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto5UVB', ungridded_lbound=1, ungridded_ubound=2)  
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto5UVC', ungridded_lbound=1, ungridded_ubound=2)  
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto7UVA', ungridded_lbound=1, ungridded_ubound=2)  
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto7UVB', ungridded_lbound=1, ungridded_ubound=2)  
+    call dshr_fldList_add(fldsExport, 'Sa_ephyto7UVC', ungridded_lbound=1, ungridded_ubound=2)  
 
-  end subroutine datm_pres_ndep_advertise
+
+  end subroutine datm_pres_uv_advertise
 
   !===============================================================================
-  subroutine datm_pres_ndep_init_pointers(exportState, sdat, rc)
+  subroutine datm_pres_uv_init_pointers(exportState, sdat, rc)
 
     ! input/output variables
     type(ESMF_State)       , intent(inout) :: exportState
@@ -54,20 +74,22 @@ contains
     integer                , intent(out)   :: rc
 
     ! local variables
-    character(len=*), parameter :: subname='(datm_ndep_init_pointers): '
+    character(len=*), parameter :: subname='(datm_uv_init_pointers): '
     !----------------------------------------------------------
 
     rc = ESMF_SUCCESS
 
     ! Get pointer to export state
-    call dshr_state_getfldptr(exportState, 'Faxa_ndep', fldptr2=Faxa_ndep, rc=rc)
+    call dshr_state_getfldptr(exportState, 'Faxa_ndep', fldptr2=Faxa_ndep, rc=rc) ! need to change
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
     ! Get pointer to stream data that will be used below - if the
     ! following stream fields are not in any sdat streams, then a null value is returned
 
-    ! cmip7 ndep forcing
-    call shr_strdata_get_stream_pointer(sdat, 'Faxa_ndep_nhx_dry', strm_Faxa_ndep_nhx_dry, rc)
+    ! cmip7 uv forcing
+    !call shr_strdata_get_stream_pointer(sdat, 'Faxa_ndep_nhx_dry', strm_Faxa_ndep_nhx_dry, rc)
+    !if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto1UVA', strm_Faxa_ndep_nhx_dry, rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
     call shr_strdata_get_stream_pointer(sdat, 'Faxa_ndep_nhx_wet', strm_Faxa_ndep_nhx_wet, rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
@@ -85,29 +107,29 @@ contains
     ! determine use_cmip_ndep module variable
     if (associated(strm_Faxa_ndep_nhx_dry) .and. associated(strm_Faxa_ndep_nhx_wet) .and. &
         associated(strm_Faxa_ndep_noy_dry) .and. associated(strm_Faxa_ndep_noy_wet)) then
-       use_cmip7_ndep = .true.
+       use_cmip7_uv = .true.
     else if (associated(strm_Faxa_ndep_nhx) .and. associated(strm_Faxa_ndep_noy)) then
-       use_cmip7_ndep = .false.
+       use_cmip7_uv = .false.
     else
-       call shr_log_error('datm_ndep_advance: ERROR: no associated stream pointers for ndep forcing', rc=rc)
+       call shr_log_error('datm_uv_advance: ERROR: no associated stream pointers for uv forcing', rc=rc)
        return
     end if
 
-  end subroutine datm_pres_ndep_init_pointers
+  end subroutine datm_pres_uv_init_pointers
 
   !===============================================================================
-  subroutine datm_pres_ndep_advance()
+  subroutine datm_pres_uv_advance()
 
-    if (use_cmip7_ndep) then
-       ! assume data is in kgN/m2/s
+    if (use_cmip7_uv) then
+       ! assume data is unitless
        Faxa_ndep(1,:) = strm_Faxa_ndep_nhx_dry(:) + strm_Faxa_ndep_nhx_wet(:)
        Faxa_ndep(2,:) = strm_Faxa_ndep_noy_dry(:) + strm_Faxa_ndep_noy_wet(:)
-    else
-       ! convert ndep flux to units of kgN/m2/s (input is in gN/m2/s)
-       Faxa_ndep(1,:) = strm_Faxa_ndep_nhx(:) / 1000._r8
-       Faxa_ndep(2,:) = strm_Faxa_ndep_noy(:) / 1000._r8
+    !else
+    !   ! convert ndep flux to units of kgN/m2/s (input is in gN/m2/s)
+    !   Faxa_ndep(1,:) = strm_Faxa_ndep_nhx(:) / 1000._r8
+    !   Faxa_ndep(2,:) = strm_Faxa_ndep_noy(:) / 1000._r8
     end if
 
-  end subroutine datm_pres_ndep_advance
+  end subroutine datm_pres_uv_advance
 
-end module datm_pres_ndep_mod
+end module datm_pres_uv_mod
