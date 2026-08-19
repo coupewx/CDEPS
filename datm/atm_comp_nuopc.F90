@@ -71,6 +71,10 @@ module cdeps_datm_comp
   use datm_pres_ndep_mod        , only : datm_pres_ndep_init_pointers
   use datm_pres_ndep_mod        , only : datm_pres_ndep_advance
 
+  use datm_pres_uv_mod        , only : datm_pres_uv_advertise
+  use datm_pres_uv_mod        , only : datm_pres_uv_init_pointers
+  use datm_pres_uv_mod        , only : datm_pres_uv_advance
+
   use datm_pres_aero_mod        , only : datm_pres_aero_advertise
   use datm_pres_aero_mod        , only : datm_pres_aero_init_pointers
   use datm_pres_aero_mod        , only : datm_pres_aero_advance
@@ -129,6 +133,7 @@ module cdeps_datm_comp
 
   logical                      :: flds_presaero = .false.             ! true => send valid prescribed aero fields to mediator
   logical                      :: flds_presndep = .false.             ! true => send valid prescribed ndep fields to mediator
+  logical                      :: flds_presuv = .false.             ! true => send valid prescribed uv fields to mediator
   logical                      :: flds_preso3 = .false.               ! true => send valid prescribed ozone fields to mediator
   logical                      :: flds_co2 = .false.                  ! true => send prescribed co2 to mediator
 
@@ -225,7 +230,7 @@ contains
     ! local variables
     integer           :: nu         ! unit number
     integer           :: ierr       ! error code
-    integer           :: bcasttmp(10)
+    integer           :: bcasttmp(11)
     character(CL)     :: nextsw_cday_calc
     type(ESMF_VM)     :: vm
     character(len=*),parameter :: subname=trim(modName) // ':(InitializeAdvertise) '
@@ -248,6 +253,7 @@ contains
          anomaly_forcing, &
          skip_restart_read, &
          flds_presndep, &
+         flds_presuv, &
          flds_preso3, &
          export_all
 
@@ -301,6 +307,7 @@ contains
        write(logunit,'(3a)')    subname,' factorFn_mesh     = ',trim(factorFn_mesh)
        write(logunit,'(2a,l6)') subname,' flds_presaero     = ',flds_presaero
        write(logunit,'(2a,l6)') subname,' flds_presndep     = ',flds_presndep
+       write(logunit,'(2a,l6)') subname,' flds_presuv     = ',flds_presuv
        write(logunit,'(2a,l6)') subname,' flds_preso3       = ',flds_preso3
        write(logunit,'(2a,l6)') subname,' flds_co2          = ',flds_co2
        write(logunit,'(2a,l6)') subname,' skip_restart_read = ',skip_restart_read
@@ -316,6 +323,7 @@ contains
        if(flds_co2)          bcasttmp(7) = 1
        if(skip_restart_read) bcasttmp(8) = 1
        if(export_all)        bcasttmp(9) = 1
+       if(flds_presuv)       bcasttmp(10) = 1
     end if
 
     ! Broadcast namelist input
@@ -339,7 +347,7 @@ contains
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
     call ESMF_VMBroadcast(vm, nextsw_cday_calc, CL, main_task, rc=rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
-    call ESMF_VMBroadcast(vm, bcasttmp, 10, main_task, rc=rc)
+    call ESMF_VMBroadcast(vm, bcasttmp, 11, main_task, rc=rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
     nx_global         = bcasttmp(1)
@@ -351,6 +359,7 @@ contains
     flds_co2          = (bcasttmp(7) == 1)
     skip_restart_read = (bcasttmp(8) == 1)
     export_all        = (bcasttmp(9) == 1)
+    flds_presndep     = (bcasttmp(10) == 1)
 
     if (nextsw_cday_calc == 'cam7') then
        nextsw_cday_calc_cam7 = .true.
@@ -382,6 +391,9 @@ contains
     end if
     if (flds_presndep) then
        call datm_pres_ndep_advertise(fldsExport)
+    end if
+    if (flds_presuv) then
+       call datm_pres_uv_advertise(fldsExport)
     end if
     if (flds_presaero) then
        call datm_pres_aero_advertise(fldsExport)
@@ -648,6 +660,12 @@ contains
           if (ChkErr(rc,__LINE__,u_FILE_u)) return
        end if
 
+       ! Initialize data pointers for uv radiation fluxes (non datamode specific and use of ungridded dimensions)
+       if (flds_presuv) then
+          call datm_pres_uv_init_pointers(exportState, sdat, rc=rc)
+          if (ChkErr(rc,__LINE__,u_FILE_u)) return
+       end if
+
        ! Initialize data pointers for prescribed aerosols (non datamode specific and use of ungridded dimensions)
        if (flds_presaero) then
           call datm_pres_aero_init_pointers(exportState, sdat, rc=rc)
@@ -723,6 +741,10 @@ contains
     end if
     if (flds_presndep) then
        call datm_pres_ndep_advance()
+       if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    end if
+    if (flds_presuv) then
+       call datm_pres_uv_advance()
        if (ChkErr(rc,__LINE__,u_FILE_u)) return
     end if
     if (flds_presaero) then
