@@ -5296,6 +5296,45 @@
     <stream_readmode>single</stream_readmode>
   </stream_entry>
 
+   <stream_entry name="presuv.cplhist">
+    <stream_meshfile>
+      <meshfile>$ATM_DOMAIN_MESH</meshfile>
+    </stream_meshfile>
+    <stream_datafiles>
+      <file first_year="$DATM_YR_START" last_year="$DATM_YR_END">$DATM_CPLHIST_DIR/$DATM_CPLHIST_CASE.cpl.ha2x1hi.%ym.nc</file>
+    </stream_datafiles>
+    <stream_datavars>
+      <var>a2x1hi_Sa_ephyto1UVA Sa_ephyto1UVA</var>
+      <var>a2x1hi_Sa_ephyto1UVB Sa_ephyto1UVB</var>
+      <var>a2x1hi_Sa_ephyto1UVC Sa_ephyto1UVC</var>
+      <var>a2x1hi_Sa_ephyto5UVA Sa_ephyto5UVA</var>
+      <var>a2x1hi_Sa_ephyto5UVB Sa_ephyto5UVB</var>
+      <var>a2x1hi_Sa_ephyto5UVC Sa_ephyto5UVC</var>
+      <var>a2x1hi_Sa_ephyto7UVA Sa_ephyto7UVA</var>
+      <var>a2x1hi_Sa_ephyto7UVB Sa_ephyto7UVB</var>
+      <var>a2x1hi_Sa_ephyto7UVC Sa_ephyto7UVC</var>
+    </stream_datavars>
+    <stream_lev_dimname>null</stream_lev_dimname>
+    <stream_mapalgo>
+      <mapalgo>bilinear</mapalgo>
+    </stream_mapalgo>
+    <stream_vectors>null</stream_vectors>
+    <stream_year_align>$DATM_YR_ALIGN</stream_year_align>
+    <stream_year_first>$DATM_YR_START</stream_year_first>
+    <stream_year_last>$DATM_YR_END</stream_year_last>
+    <stream_offset>0</stream_offset>
+    <stream_tintalgo>
+      <tintalgo>nearest</tintalgo>
+    </stream_tintalgo>
+    <stream_taxmode>
+      <taxmode>cycle</taxmode>
+    </stream_taxmode>
+    <stream_dtlimit>
+      <dtlimit>1.e30</dtlimit>
+    </stream_dtlimit>
+    <stream_readmode>single</stream_readmode>
+  </stream_entry>
+  
   <stream_entry name="CPLHISTForcing.Solar">
     <stream_meshfile>
       <meshfile>$ATM_DOMAIN_MESH</meshfile>
