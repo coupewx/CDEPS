@@ -26,15 +26,15 @@ module datm_pres_uv_mod
   real(r8), pointer :: Sa_ephyto7UVC(:,:) => null()
 
   ! stream data
-  real(r8), pointer :: strm_Sa_ephyto1UVA(:) => null() ! stream cmip7 uv data
-  real(r8), pointer :: strm_Sa_ephyto1UVB(:) => null() ! stream cmip7 uv data
-  real(r8), pointer :: strm_Sa_ephyto1UVC(:) => null() ! stream cmip7 uv data
-  real(r8), pointer :: strm_Sa_ephyto5UVA(:) => null() ! stream cmip7 uv data
-  real(r8), pointer :: strm_Sa_ephyto5UVB(:) => null() ! stream cmip7 uv data
-  real(r8), pointer :: strm_Sa_ephyto5UVC(:) => null() ! stream cmip7 uv data
-  real(r8), pointer :: strm_Sa_ephyto7UVA(:) => null() ! stream cmip7 uv data
-  real(r8), pointer :: strm_Sa_ephyto7UVB(:) => null() ! stream cmip7 uv data
-  real(r8), pointer :: strm_Sa_ephyto7UVC(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto1UVA(:,:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto1UVB(:,:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto1UVC(:,:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto5UVA(:,:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto5UVB(:,:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto5UVC(:,:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto7UVA(:,:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto7UVB(:,:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto7UVC(:,:) => null() ! stream cmip7 uv data
 
   logical :: use_cmip7_uv
 
@@ -100,15 +100,15 @@ contains
 
     if (use_cmip7_uv) then
        ! assume data is unitless
-       Sa_ephyto1UVA(:) = strm_Sa_ephyto1UVA(:)
-       Sa_ephyto1UVB(:) = strm_Sa_ephyto1UVB(:)
-       Sa_ephyto1UVC(:) = strm_Sa_ephyto1UVC(:)
-       Sa_ephyto5UVA(:) = strm_Sa_ephyto5UVA(:)
-       Sa_ephyto5UVB(:) = strm_Sa_ephyto5UVB(:)
-       Sa_ephyto5UVC(:) = strm_Sa_ephyto5UVC(:)
-       Sa_ephyto7UVA(:) = strm_Sa_ephyto7UVA(:)
-       Sa_ephyto7UVB(:) = strm_Sa_ephyto7UVB(:)
-       Sa_ephyto7UVC(:) = strm_Sa_ephyto7UVC(:)
+       Sa_ephyto1UVA(:,:) = strm_Sa_ephyto1UVA(:,:)
+       Sa_ephyto1UVB(:,:) = strm_Sa_ephyto1UVB(:,:)
+       Sa_ephyto1UVC(:,:) = strm_Sa_ephyto1UVC(:,:)
+       Sa_ephyto5UVA(:,:) = strm_Sa_ephyto5UVA(:,:)
+       Sa_ephyto5UVB(:,:) = strm_Sa_ephyto5UVB(:,:)
+       Sa_ephyto5UVC(:,:) = strm_Sa_ephyto5UVC(:,:)
+       Sa_ephyto7UVA(:,:) = strm_Sa_ephyto7UVA(:,:)
+       Sa_ephyto7UVB(:,:) = strm_Sa_ephyto7UVB(:,:)
+       Sa_ephyto7UVC(:,:) = strm_Sa_ephyto7UVC(:,:)
 
     !else
     !   ! convert ndep flux to units of kgN/m2/s (input is in gN/m2/s)
