@@ -36,7 +36,6 @@ module datm_pres_uv_mod
   real(r8), pointer :: strm_Sa_ephyto7UVB(:) => null() ! stream cmip7 ndep data
   real(r8), pointer :: strm_Sa_ephyto7UVC(:) => null() ! stream cmip7 ndep data
 
-
   logical :: use_cmip7_uv
 
   character(len=*), parameter :: u_FILE_u = &
@@ -80,29 +79,16 @@ contains
     rc = ESMF_SUCCESS
 
     ! Get pointer to export state
-    call dshr_state_getfldptr(exportState, 'Faxa_ndep', fldptr2=Faxa_ndep, rc=rc) ! need to change
+    call dshr_state_getfldptr(exportState, 'Sa_ephyto1UVA', fldptr2=Sa_ephyto1UVA, rc=rc) ! need to change
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
 
     ! Get pointer to stream data that will be used below - if the
     ! following stream fields are not in any sdat streams, then a null value is returned
 
     ! cmip7 uv forcing
-    !call shr_strdata_get_stream_pointer(sdat, 'Faxa_ndep_nhx_dry', strm_Faxa_ndep_nhx_dry, rc)
-    !if (ChkErr(rc,__LINE__,u_FILE_u)) return
     call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto1UVA', strm_Faxa_ndep_nhx_dry, rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
-    call shr_strdata_get_stream_pointer(sdat, 'Faxa_ndep_nhx_wet', strm_Faxa_ndep_nhx_wet, rc)
-    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-    call shr_strdata_get_stream_pointer(sdat, 'Faxa_ndep_noy_dry', strm_Faxa_ndep_noy_dry, rc)
-    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-    call shr_strdata_get_stream_pointer(sdat, 'Faxa_ndep_noy_wet', strm_Faxa_ndep_noy_wet, rc)
-    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-
-    ! cmip6 ndep forcing
-    call shr_strdata_get_stream_pointer( sdat, 'Faxa_ndep_nhx', strm_Faxa_ndep_nhx, rc)
-    if (ChkErr(rc,__LINE__,u_FILE_u)) return
-    call shr_strdata_get_stream_pointer( sdat, 'Faxa_ndep_noy', strm_Faxa_ndep_noy, rc)
-    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+  
 
     ! determine use_cmip_ndep module variable
     if (associated(strm_Faxa_ndep_nhx_dry) .and. associated(strm_Faxa_ndep_nhx_wet) .and. &
@@ -122,8 +108,16 @@ contains
 
     if (use_cmip7_uv) then
        ! assume data is unitless
-       Faxa_ndep(1,:) = strm_Faxa_ndep_nhx_dry(:) + strm_Faxa_ndep_nhx_wet(:)
-       Faxa_ndep(2,:) = strm_Faxa_ndep_noy_dry(:) + strm_Faxa_ndep_noy_wet(:)
+       Sa_ephyto1UVA(:) = strm_Sa_ephyto1UVA(:)
+       Sa_ephyto1UVB(:) = strm_Sa_ephyto1UB(:)
+       Sa_ephyto1UVC(:) = strm_Sa_ephyto1UVC(:)
+       Sa_ephyto5UVA(:) = strm_Sa_ephyto5UVA(:)
+       Sa_ephyto5UVB(:) = strm_Sa_ephyto5UB(:)
+       Sa_ephyto5UVC(:) = strm_Sa_ephyto5UVC(:)
+       Sa_ephyto7UVA(:) = strm_Sa_ephyto7UVA(:)
+       Sa_ephyto7UVB(:) = strm_Sa_ephyto7UB(:)
+       Sa_ephyto7UVC(:) = strm_Sa_ephyto7UVC(:)
+
     !else
     !   ! convert ndep flux to units of kgN/m2/s (input is in gN/m2/s)
     !   Faxa_ndep(1,:) = strm_Faxa_ndep_nhx(:) / 1000._r8
