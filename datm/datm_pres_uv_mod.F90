@@ -26,15 +26,15 @@ module datm_pres_uv_mod
   real(r8), pointer :: Sa_ephyto7UVC(:,:) => null()
 
   ! stream data
-  real(r8), pointer :: strm_Sa_ephyto1UVA(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Sa_ephyto1UVB(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Sa_ephyto1UVC(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Sa_ephyto5UVA(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Sa_ephyto5UVB(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Sa_ephyto5UVC(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Sa_ephyto7UVA(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Sa_ephyto7UVB(:) => null() ! stream cmip7 ndep data
-  real(r8), pointer :: strm_Sa_ephyto7UVC(:) => null() ! stream cmip7 ndep data
+  real(r8), pointer :: strm_Sa_ephyto1UVA(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto1UVB(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto1UVC(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto5UVA(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto5UVB(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto5UVC(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto7UVA(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto7UVB(:) => null() ! stream cmip7 uv data
+  real(r8), pointer :: strm_Sa_ephyto7UVC(:) => null() ! stream cmip7 uv data
 
   logical :: use_cmip7_uv
 
@@ -86,20 +86,12 @@ contains
     ! following stream fields are not in any sdat streams, then a null value is returned
 
     ! cmip7 uv forcing
-    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto1UVA', strm_Faxa_ndep_nhx_dry, rc)
+    call shr_strdata_get_stream_pointer(sdat, 'Sa_ephyto1UVA', strm_Sa_ephyto1UVA, rc)
     if (ChkErr(rc,__LINE__,u_FILE_u)) return
   
 
-    ! determine use_cmip_ndep module variable
-    if (associated(strm_Faxa_ndep_nhx_dry) .and. associated(strm_Faxa_ndep_nhx_wet) .and. &
-        associated(strm_Faxa_ndep_noy_dry) .and. associated(strm_Faxa_ndep_noy_wet)) then
-       use_cmip7_uv = .true.
-    else if (associated(strm_Faxa_ndep_nhx) .and. associated(strm_Faxa_ndep_noy)) then
-       use_cmip7_uv = .false.
-    else
-       call shr_log_error('datm_uv_advance: ERROR: no associated stream pointers for uv forcing', rc=rc)
-       return
-    end if
+    ! determine module variable
+    use_cmip7_uv = .true.
 
   end subroutine datm_pres_uv_init_pointers
 
