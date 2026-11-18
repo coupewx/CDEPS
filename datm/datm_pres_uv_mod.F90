@@ -101,13 +101,13 @@ contains
     if (use_cmip7_uv) then
        ! assume data is unitless
        Sa_ephyto1UVA(:) = strm_Sa_ephyto1UVA(:)
-       Sa_ephyto1UVB(:) = strm_Sa_ephyto1UB(:)
+       Sa_ephyto1UVB(:) = strm_Sa_ephyto1UVB(:)
        Sa_ephyto1UVC(:) = strm_Sa_ephyto1UVC(:)
        Sa_ephyto5UVA(:) = strm_Sa_ephyto5UVA(:)
-       Sa_ephyto5UVB(:) = strm_Sa_ephyto5UB(:)
+       Sa_ephyto5UVB(:) = strm_Sa_ephyto5UVB(:)
        Sa_ephyto5UVC(:) = strm_Sa_ephyto5UVC(:)
        Sa_ephyto7UVA(:) = strm_Sa_ephyto7UVA(:)
-       Sa_ephyto7UVB(:) = strm_Sa_ephyto7UB(:)
+       Sa_ephyto7UVB(:) = strm_Sa_ephyto7UVB(:)
        Sa_ephyto7UVC(:) = strm_Sa_ephyto7UVC(:)
 
     !else
