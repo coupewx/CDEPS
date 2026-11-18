@@ -1,4 +1,4 @@
-module datm_pres_ndep_mod
+module datm_pres_uv_mod
 
   use ESMF             , only : ESMF_SUCCESS, ESMF_State, ESMF_StateItem_Flag
   use shr_kind_mod     , only : r8=>shr_kind_r8
